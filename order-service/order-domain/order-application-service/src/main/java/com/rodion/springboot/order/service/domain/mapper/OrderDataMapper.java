@@ -7,7 +7,9 @@ import com.rodion.springboot.domain.valueobject.RestaurantId;
 import com.rodion.springboot.order.service.domain.dto.create.CreateOrderCommand;
 import com.rodion.springboot.order.service.domain.dto.create.CreateOrderResponse;
 import com.rodion.springboot.order.service.domain.dto.create.OrderAddress;
+import com.rodion.springboot.order.service.domain.dto.track.TrackOrderResponse;
 import com.rodion.springboot.order.service.domain.entity.Order;
+import com.rodion.springboot.order.service.domain.entity.OrderItem;
 import com.rodion.springboot.order.service.domain.entity.Product;
 import com.rodion.springboot.order.service.domain.entity.Restaurant;
 import com.rodion.springboot.order.service.domain.valueobject.StreetAddress;
@@ -39,15 +41,24 @@ public class OrderDataMapper {
                 .build();
     }
 
-    public CreateOrderResponse orderToCreateOrderResponse(Order order) {
+    public CreateOrderResponse orderToCreateOrderResponse(Order order, String message) {
         return CreateOrderResponse.builder()
                 .orderTackingId(order.getTrackingId().getValue())
                 .orderStatus(order.getOrderStatus())
+                .message(message)
+                .build();
+    }
+
+    public TrackOrderResponse orderToTrackOrderResponse(Order order) {
+        return TrackOrderResponse.builder()
+                .orderTrackingId(order.getTrackingId().getValue())
+                .orderStatus(order.getOrderStatus())
+                .failureMessages(order.getFailureMessages())
                 .build();
     }
 
     private List<OrderItem> orderItemsToOrderItemEntities(
-            List<com.food.ordering.system.order.service.domain.dto.create.OrderItem> orderItems) {
+            List<com.rodion.springboot.order.service.domain.dto.create.OrderItem> orderItems) {
         return orderItems.stream()
                 .map(orderItem ->
                         OrderItem.builder()
